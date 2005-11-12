@@ -7,6 +7,7 @@ WriteMakefile(
     AUTHOR       => 'Boris Sukholitko (boriss@gmail.com)',
     ABSTRACT     => '',
     PREREQ_PM    => {
-                     'Test::TempDatabase' => '',
+                     'Test::TempDatabase' => '0.06',
+		     'Class::Data::Inheritable' => '',
                     },
 );

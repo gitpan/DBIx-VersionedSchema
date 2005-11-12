@@ -3,15 +3,8 @@ use warnings FATAL => 'all';
 
 use Test::More tests => 14;
 use Test::TempDatabase;
-use POSIX qw(setuid);
 
 BEGIN { use_ok( 'DBIx::VersionedSchema' ); }
-
-unless ($<) {
-	diag("Setting postgres uid");
-	my $p_uid = getpwnam('postgres');
-	setuid($p_uid) or die "Unable to set $p_uid uid";
-}
 
 my $temp_db = Test::TempDatabase->create(dbname => 'versioned_schema_db');
 ok($temp_db);

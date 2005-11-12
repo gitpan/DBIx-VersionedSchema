@@ -49,7 +49,7 @@ use warnings FATAL => 'all';
 
 package DBIx::VersionedSchema;
 use base qw(Class::Data::Inheritable);
-our $VERSION     = 0.01;
+our $VERSION     = 0.02;
 
 __PACKAGE__->mk_classdata('Versions');
 
