@@ -49,7 +49,7 @@ use warnings FATAL => 'all';
 
 package DBIx::VersionedSchema;
 use base qw(Class::Data::Inheritable);
-our $VERSION     = 0.02;
+our $VERSION     = 0.03;
 
 __PACKAGE__->mk_classdata('Versions');
 
@@ -126,12 +126,13 @@ sub run_updates {
 		$cur_version = 0;
 	}
 	my $versions = $self->Versions || [];
-	for (my $i = $cur_version; $i < scalar(@$versions); $i++) {
+	my $i = $cur_version;
+	for (; $i < scalar(@$versions); $i++) {
 		$versions->[$i]->($dbh);
 	}
 	$dbh->do(sprintf(q{ insert into %s (version)
 			values (?) }, $self->Name), undef, scalar(@$versions))
-		if @$versions;
+		if $i > $cur_version;
 }
 
 1; 

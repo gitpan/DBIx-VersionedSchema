@@ -1,8 +1,6 @@
 MANIFEST
 LICENSE
 README
-Todo
-Changes
 lib/DBIx/VersionedSchema.pm
 t/001_load.t
 Makefile.PL

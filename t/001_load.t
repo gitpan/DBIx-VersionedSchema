@@ -1,7 +1,7 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Test::More tests => 14;
+use Test::More tests => 15;
 use Test::TempDatabase;
 
 BEGIN { use_ok( 'DBIx::VersionedSchema' ); }
@@ -42,6 +42,10 @@ $vs1->run_updates;
 is($vs1->current_version, 2);
 is(($dbh->selectrow_array(q{ select * from test1 }))[0], 'aaa');
 
+# run again
+$vs1->run_updates;
+is($vs1->current_version, 2);
+
 # Test transactioness
 VSTest1->add_version(sub {
 	shift()->do(q{ insert into test1 values ('bbb') });
@@ -49,11 +53,12 @@ VSTest1->add_version(sub {
 VSTest1->add_version(sub {
 	my $dbh = shift;
 	$dbh->do(q{ set client_min_messages to panic });
-	$dbh->{PrintError} = 0;
+	local $dbh->{PrintError} = 0;
+	local $dbh->{RaiseError} = 1;
 	$dbh->do(q{ insert into shshs values ('aaa') });
 });
 eval { $vs1->run_updates; };
-ok($@);
+like($@, qr/do.*load.*5/);
 is($vs1->current_version, 2);
 is(scalar($dbh->selectrow_array(q{ 
 	select * from test1 where val = 'bbb'})), undef);
